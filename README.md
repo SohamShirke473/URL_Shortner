@@ -19,7 +19,6 @@ A high-performance URL shortener backend built with Express.js, PostgreSQL, and 
 | Redis | Caching |
 | Drizzle ORM | Database ORM |
 | JWT | Authentication |
-| Zod | Validation |
 | Docker | Containerization |
 
 ## 🚀 Getting Started
