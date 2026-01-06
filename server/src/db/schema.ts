@@ -1,4 +1,5 @@
-import { integer, pgTable, serial, timestamp, varchar, uuid } from "drizzle-orm/pg-core";
+import { pgTable, timestamp, varchar, uuid, index } from "drizzle-orm/pg-core";
+import { length } from "zod";
 
 export const user = pgTable("user", {
     id: uuid("id").primaryKey().defaultRandom(),
@@ -14,3 +15,16 @@ export const url = pgTable("url", {
     user_id: uuid("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
     created_at: timestamp("created_at").notNull().defaultNow(),
 })
+
+export const analytics = pgTable("analytics", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    url_id: uuid("url_id").notNull().references(() => url.id, { onDelete: "cascade" }),
+    ip_address: varchar("ip_address", { length: 255 }).notNull(),
+    user_agent: varchar("user_agent", { length: 255 }).notNull(),
+    clicked_at: timestamp("clicked_at").notNull().defaultNow(),
+},
+    (table) => ({
+        urlIdx: index("url_analytics_url_idx").on(table.url_id),
+        timeIdx: index("url_analytics_time_idx").on(table.clicked_at),
+    })
+)
