@@ -4,4 +4,5 @@ const router = Router();
 
 router.get("/:shortCode", redirectHandler);
 
+
 export default router;

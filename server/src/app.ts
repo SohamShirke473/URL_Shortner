@@ -4,6 +4,7 @@ import authRoutes from "./modules/auth/routes";
 import urlRoutes from "./modules/url/routes";
 import redirectRoutes from "./modules/re-direct/routes";
 import { authMiddleware } from "./modules/auth/middleware";
+import analyticsRoutes from "./modules/analytics/routes";
 
 const app = express();
 app.use(cors({
@@ -21,5 +22,6 @@ app.get("/", (_req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api", authMiddleware, urlRoutes);
 app.use("/", redirectRoutes);
+app.use("/api", authMiddleware, analyticsRoutes);
 
 export default app;

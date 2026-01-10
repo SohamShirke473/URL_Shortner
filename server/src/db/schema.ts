@@ -1,5 +1,4 @@
 import { pgTable, timestamp, varchar, uuid, index } from "drizzle-orm/pg-core";
-import { length } from "zod";
 
 export const user = pgTable("user", {
     id: uuid("id").primaryKey().defaultRandom(),
