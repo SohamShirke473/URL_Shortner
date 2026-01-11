@@ -15,7 +15,7 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(express.json());
-startAnalyticsWorker(1);
+startAnalyticsWorker(30);
 
 app.get("/", (_req, res) => {
     res.send("Hello World!");
