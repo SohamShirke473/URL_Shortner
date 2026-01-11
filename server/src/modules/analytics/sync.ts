@@ -1,7 +1,7 @@
-import redis from "../../redis"; 
-import db from "../../db"; 
+import redis from "../../redis";
+import db from "../../db";
 import { analytics, url } from "../../db/schema";
-import { eq } from "drizzle-orm";
+import { inArray } from "drizzle-orm";
 
 type analyticsLogsTypes = [string, string[]];
 
@@ -31,12 +31,10 @@ function normalizeLogStream(entries: analyticsLogsTypes[]) {
   });
 }
 
-
 let lastStreamId = "0";
 
 export async function syncAnalyticsToDB() {
   try {
-
     const analyticsLogs = await redis.xread(
       "STREAMS",
       "analytics_stream",
@@ -49,26 +47,21 @@ export async function syncAnalyticsToDB() {
     }
 
     const normalizedLogs = normalizeLogStream(analyticsLogs[0][1]);
-    
 
     lastStreamId = normalizedLogs[normalizedLogs.length - 1].stream_id;
 
     const shortCodes = [...new Set(normalizedLogs.map(log => log.short_code))];
-    
-
     const urlMappings = await db
       .select({
         id: url.id,
         short_code: url.short_code,
       })
       .from(url)
-      .where(eq(url.short_code, shortCodes[0]));
-
+      .where(inArray(url.short_code, shortCodes));
 
     const shortCodeToIdMap = new Map(
       urlMappings.map(u => [u.short_code, u.id])
     );
-
 
     const analyticsToInsert = normalizedLogs
       .map(log => {
@@ -91,9 +84,8 @@ export async function syncAnalyticsToDB() {
       return;
     }
 
-
     await db.insert(analytics).values(analyticsToInsert);
-    
+
     console.log(`Synced ${analyticsToInsert.length} analytics entries to database`);
   } catch (error) {
     console.error("Error syncing analytics to DB:", error);
@@ -102,7 +94,7 @@ export async function syncAnalyticsToDB() {
 
 export async function startAnalyticsWorker(syncIntervalMinutes = 30) {
   const syncIntervalMs = syncIntervalMinutes * 60 * 1000;
-  
+
   console.log(`Analytics worker started. Syncing to DB every ${syncIntervalMinutes} minutes`);
 
   await syncAnalyticsToDB();

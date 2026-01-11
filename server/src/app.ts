@@ -5,12 +5,12 @@ import urlRoutes from "./modules/url/routes";
 import redirectRoutes from "./modules/re-direct/routes";
 import { authMiddleware } from "./modules/auth/middleware";
 import analyticsRoutes from "./modules/analytics/routes";
-import { startAnalyticsWorker } from "./modules/analytics/snyc";
+import { startAnalyticsWorker } from "./modules/analytics/sync";
 
 
 const app = express();
 app.use(cors({
-    origin: "*",
+    origin: process.env.FRONTEND_URL,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
