@@ -6,6 +6,7 @@ import { Response } from "express";
 
 export const getAnalyticsHandler = async (req: AuthRequest, res: Response) => {
     try {
+        
         const { id: urlId } = req.params;
         const userId = req.userId;
 

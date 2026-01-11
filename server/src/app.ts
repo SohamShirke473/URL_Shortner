@@ -5,6 +5,8 @@ import urlRoutes from "./modules/url/routes";
 import redirectRoutes from "./modules/re-direct/routes";
 import { authMiddleware } from "./modules/auth/middleware";
 import analyticsRoutes from "./modules/analytics/routes";
+import { startAnalyticsWorker } from "./modules/analytics/snyc";
+
 
 const app = express();
 app.use(cors({
@@ -13,6 +15,7 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(express.json());
+startAnalyticsWorker(1);
 
 app.get("/", (_req, res) => {
     res.send("Hello World!");

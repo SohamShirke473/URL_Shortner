@@ -14,9 +14,9 @@ export async function redirectHandler(req: Request, res: Response) {
         const cacheKey = `short:${shortCode}`;
         const cachedUrl = await redis.get(cacheKey);
         const analyticsId=await redis.xadd(
-        "analytics_stream","*","url_id",shortCode,
-        "ip_address",ip||"unknown",
-        "user_agent",user_agent||"unknown");
+            "analytics_stream","*","short_code",shortCode,
+            "ip_address",ip||"unknown",
+            "user_agent",user_agent||"unknown");
         if (cachedUrl) {
             return res.status(302).redirect(cachedUrl);
         }
@@ -25,13 +25,6 @@ export async function redirectHandler(req: Request, res: Response) {
             return res.status(404).json({ message: "URL not found" });
         }
         await redis.set(cacheKey, url.url, "EX", 60 * 60);
-
-        await db.insert(analytics).values({
-            url_id: url.id,
-            ip_address: ip || "unknown",
-            user_agent: user_agent || "unknown",
-        });
-
         return res.status(302).redirect(url.url);
     } catch (err) {
         console.error(err);
