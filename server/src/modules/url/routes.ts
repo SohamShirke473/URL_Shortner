@@ -1,23 +1,20 @@
 import { Router } from "express";
-import { shortenUrlHandler, getUrlsHandler, getUrlbyIdHandler, deleteUrlHandler, updateUrlHandler } from "./controller";
+import { shortenUrlHandler, getUrlsHandler, getUrlbyIdHandler, deleteUrlHandler, updateUrlHandler, bulkDeleteUrlsHandler } from "./controller";
+import { validate } from "../../lib/validate";
+import { CreateUrlSchema, UpdateUrlSchema, UrlIdParamSchema, BulkDeleteUrlsSchema } from "../../lib/schemas";
 
 const router = Router();
 
-//to make url shorten
-router.post("/url", shortenUrlHandler);
+router.post("/url", validate({ body: CreateUrlSchema }), shortenUrlHandler);
 
-// to get all shorten urls
 router.get("/urls", getUrlsHandler);
 
-//to get shorten url by id
-router.get("/url/:id", getUrlbyIdHandler)
+router.get("/url/:id", validate({ params: UrlIdParamSchema }), getUrlbyIdHandler);
 
-//to delete shorten url by id
-router.delete("/url/:id", deleteUrlHandler)
+router.delete("/url/:id", validate({ params: UrlIdParamSchema }), deleteUrlHandler);
 
-//to update shorten url by id
-router.put("/url/:id", updateUrlHandler)
+router.put("/url/:id", validate({ params: UrlIdParamSchema, body: UpdateUrlSchema }), updateUrlHandler);
 
-
+router.delete("/urls/bulk", validate({ body: BulkDeleteUrlsSchema }), bulkDeleteUrlsHandler);
 
 export default router;

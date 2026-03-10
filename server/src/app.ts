@@ -1,11 +1,13 @@
 import express from "express";
 import cors from "cors";
+import swaggerUi from "swagger-ui-express";
 import authRoutes from "./modules/auth/routes";
 import urlRoutes from "./modules/url/routes";
 import redirectRoutes from "./modules/re-direct/routes";
 import { authMiddleware } from "./modules/auth/middleware";
 import analyticsRoutes from "./modules/analytics/routes";
 import { startAnalyticsWorker } from "./modules/analytics/sync";
+import { document } from "./lib/openapi";
 
 
 const app = express();
@@ -19,6 +21,11 @@ startAnalyticsWorker(30);
 
 app.get("/", (_req, res) => {
     res.send("Hello World!");
+});
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(document));
+app.get("/swagger.json", (_req, res) => {
+    res.json(document);
 });
 
 // Routes

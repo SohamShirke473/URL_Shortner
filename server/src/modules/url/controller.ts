@@ -10,10 +10,6 @@ export const shortenUrlHandler = async (req: AuthRequest, res: Response) => {
         const { url } = req.body;
         const userId = req.userId;
 
-        if (!url) {
-            return res.status(400).json({ message: "URL is required" });
-        }
-
         if (!userId) {
             return res.status(401).json({ message: "Unauthorized" });
         }
@@ -112,6 +108,38 @@ export const updateUrlHandler = async (req: AuthRequest, res: Response) => {
         return res.status(200).json({
             message: "URL updated successfully",
             data: updatedUrl,
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const bulkDeleteUrlsHandler = async (req: AuthRequest, res: Response) => {
+    try {
+        const { ids } = req.body;
+        const userId = req.userId;
+
+        if (!userId) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        const deletedUrls = await db
+            .delete(urlTable)
+            .where(and(eq(urlTable.user_id, userId), eq(urlTable.id, ids[0])))
+            .returning();
+
+        for (let i = 1; i < ids.length; i++) {
+            const result = await db
+                .delete(urlTable)
+                .where(and(eq(urlTable.user_id, userId), eq(urlTable.id, ids[i])))
+                .returning();
+            deletedUrls.push(...result);
+        }
+
+        return res.status(200).json({
+            message: "URLs deleted successfully",
+            data: deletedUrls,
         });
     } catch (err) {
         console.error(err);
