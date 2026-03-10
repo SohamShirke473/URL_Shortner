@@ -3,6 +3,7 @@ import db from "../../db";
 import { analytics, url } from "../../db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { Response } from "express";
+import { syncAnalyticsToDB } from "./sync";
 
 export const getAnalyticsHandler = async (req: AuthRequest, res: Response) => {
     try {
@@ -79,5 +80,15 @@ export const getAllAnalyticsHandler = async (req: AuthRequest, res: Response) =>
     } catch (err) {
         console.error(err);
         return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const triggerSyncHandler = async (_req: AuthRequest, res: Response) => {
+    try {
+        await syncAnalyticsToDB();
+        return res.status(200).json({ message: "Analytics synced successfully" });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Failed to sync analytics" });
     }
 };

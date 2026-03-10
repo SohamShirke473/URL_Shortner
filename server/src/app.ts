@@ -17,7 +17,7 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(express.json());
-startAnalyticsWorker(30);
+startAnalyticsWorker(1);
 
 app.get("/", (_req, res) => {
     res.send("Hello World!");
@@ -32,6 +32,7 @@ app.get("/swagger.json", (_req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api", authMiddleware, urlRoutes);
 app.use("/", redirectRoutes);
+app.use("/api/analytics/sync", analyticsRoutes); // public for manual sync
 app.use("/api", authMiddleware, analyticsRoutes);
 
 export default app;
