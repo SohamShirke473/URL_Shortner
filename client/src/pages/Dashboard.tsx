@@ -23,7 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Layout } from "@/components/layout";
-import { urlApi, type Url } from "@/lib/api";
+import { urlApi, SHORT_URL_BASE, type Url } from "@/lib/api";
 import { Copy, MoreHorizontal, BarChart3, Trash2, ExternalLink, Edit } from "lucide-react";
 
 const urlSchema = z.object({
@@ -102,8 +102,7 @@ export function Dashboard() {
   };
 
   const copyToClipboard = (shortCode: string) => {
-    const baseUrl = import.meta.env.VITE_SHORT_URL_BASE || "http://localhost:3000";
-    navigator.clipboard.writeText(`${baseUrl}/${shortCode}`);
+    navigator.clipboard.writeText(`${SHORT_URL_BASE}/${shortCode}`);
     toast.success("Copied to clipboard");
   };
 
@@ -185,7 +184,7 @@ export function Dashboard() {
                             <Copy className="h-4 w-4" />
                           </Button>
                           <a
-                            href={`${import.meta.env.VITE_SHORT_URL_BASE || "http://localhost:3000"}/${url.short_code}`}
+                            href={`${SHORT_URL_BASE}/${url.short_code}`}
                             target="_blank"
                             rel="noopener noreferrer"
                           >

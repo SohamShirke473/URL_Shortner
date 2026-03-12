@@ -10,9 +10,13 @@ import { startAnalyticsWorker } from "./modules/analytics/sync";
 import { document } from "./lib/openapi";
 
 
+const frontendUrl = process.env.FRONTEND_URL?.startsWith("http")
+    ? process.env.FRONTEND_URL
+    : `https://${process.env.FRONTEND_URL}`;
+
 const app = express();
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
+    origin: frontendUrl,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));

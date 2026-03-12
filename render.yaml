@@ -27,28 +27,18 @@ services:
         fromDatabase:
           name: url-shortener-db
           property: connectionString
-      - key: REDIS_HOST
+      - key: REDIS_URL
         fromService:
           name: url-shortener-redis
           type: redis
-          property: host
-      - key: REDIS_PORT
-        fromService:
-          name: url-shortener-redis
-          type: redis
-          property: port
-      - key: REDIS_PASSWORD
-        fromService:
-          name: url-shortener-redis
-          type: redis
-          property: password
+          property: connectionString
       - key: JWT_SECRET
         generateValue: true
       - key: FRONTEND_URL
         fromService:
           name: url-shortener-client
           type: web
-          property: url
+          property: host
       - key: NODE_ENV
         value: production
 
@@ -65,13 +55,12 @@ services:
         fromService:
           name: url-shortener-server
           type: web
-          property: url
-        # Render sets this at build time; we append /api via a header rewrite or in code
+          property: host
       - key: VITE_SHORT_URL_BASE
         fromService:
           name: url-shortener-server
           type: web
-          property: url
+          property: host
     routes:
       - type: rewrite
         source: /*

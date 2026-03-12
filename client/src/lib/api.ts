@@ -1,7 +1,14 @@
 import axios from "axios";
 
-const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+function normalizeUrl(raw: string): string {
+  if (!raw.startsWith("http")) raw = `https://${raw}`;
+  return raw.replace(/\/$/, "");
+}
+
+const rawBaseUrl = normalizeUrl(import.meta.env.VITE_API_BASE_URL || "http://localhost:3000");
 const API_BASE_URL = rawBaseUrl.endsWith("/api") ? rawBaseUrl : `${rawBaseUrl}/api`;
+
+export const SHORT_URL_BASE = normalizeUrl(import.meta.env.VITE_SHORT_URL_BASE || "http://localhost:3000");
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
