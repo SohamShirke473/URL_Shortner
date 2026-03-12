@@ -102,7 +102,8 @@ export function Dashboard() {
   };
 
   const copyToClipboard = (shortCode: string) => {
-    navigator.clipboard.writeText(`http://localhost:3000/${shortCode}`);
+    const baseUrl = import.meta.env.VITE_SHORT_URL_BASE || "http://localhost:3000";
+    navigator.clipboard.writeText(`${baseUrl}/${shortCode}`);
     toast.success("Copied to clipboard");
   };
 
@@ -184,7 +185,7 @@ export function Dashboard() {
                             <Copy className="h-4 w-4" />
                           </Button>
                           <a
-                            href={`http://localhost:3000/${url.short_code}`}
+                            href={`${import.meta.env.VITE_SHORT_URL_BASE || "http://localhost:3000"}/${url.short_code}`}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
